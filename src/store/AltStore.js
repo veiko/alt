@@ -99,9 +99,14 @@ class AltStore {
 
   unlisten(cb) {
     this.lifecycle('unlisten')
-    this.subscriptions
-      .filter(subscription => subscription.cb === cb)
-      .forEach(subscription => subscription.dispose())
+    this.subscriptions = this.subscriptions
+      .filter(subscription => {
+        const unlisten = subscription.cb === cb
+        if (unlisten) {
+          subscription.dispose()
+        }
+        return !unlisten
+      })
   }
 
   getState() {
